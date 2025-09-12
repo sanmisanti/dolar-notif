@@ -1,0 +1,39 @@
+{
+  "name": "dolar-notif",
+  "version": "1.0.0",
+  "description": "Monitor de cotización dólar oficial argentino con alertas inteligentes",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node test-system.js",
+    "production": "./start-production.sh",
+    "production-pm2": "pm2 start ecosystem.config.cjs",
+    "stop-pm2": "pm2 stop dolar-notif",
+    "restart-pm2": "pm2 restart dolar-notif",
+    "logs-pm2": "pm2 logs dolar-notif",
+    "status-pm2": "pm2 status",
+    "monit-pm2": "pm2 monit"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "axios": "^1.7.7",
+    "sqlite3": "^5.1.6",
+    "nodemailer": "^6.9.14",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "dollar",
+    "argentina",
+    "monitoring",
+    "notifications",
+    "finance"
+  ],
+  "author": "",
+  "license": "MIT"
+}

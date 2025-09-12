@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment variables (sensitive data)
+.env
+
+# Database
+data/
+*.db
+
+# Logs
+logs/
+*.log
+
+# PM2
+.pm2/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Archives
+*.tar.gz
+*.zip
+
+# SSH keys
+*.pem
+
+# Cache
+.cache/
+
+# EC2 setup files with sensitive data
+check-system.sh
