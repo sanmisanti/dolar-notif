@@ -34,7 +34,7 @@ pm2 delete dolar-notif-testing 2>/dev/null || true
 
 # Iniciar aplicación de producción con PM2
 log "🚀 Iniciando aplicación de producción..."
-pm2 start ecosystem.config.js --only dolar-notif-production
+pm2 start ecosystem.config.cjs --only dolar-notif-production
 
 # Verificar que se inició correctamente
 sleep 3
