@@ -3,15 +3,16 @@
 echo "🚀 INICIANDO DÓLAR NOTIF - MODO PRODUCCIÓN"
 echo "========================================"
 
-# Configuración de producción (horario bancario - cada 10 minutos)
+# Configuración de producción (horario bancario argentino - cada 10 minutos)
+# Horario argentino 11:00-18:00 = UTC 14:00-21:00 (UTC+3)
 export TESTING_MODE=false
-export SCHEDULE_CRON="*/10 11-18 * * 1-5"
-export SCHEDULE_START_HOUR=11
-export SCHEDULE_END_HOUR=18
+export SCHEDULE_CRON="*/10 14-21 * * 1-5"
+export SCHEDULE_START_HOUR=14
+export SCHEDULE_END_HOUR=21
 export SCHEDULE_WEEKDAYS_ONLY=true
 export SCHEDULE_INTERVAL_MINUTES=10
 export SCHEDULE_TIMEZONE="America/Argentina/Buenos_Aires"
-export SCHEDULE_REPORT_CRON="0 19 */2 * *"
+export SCHEDULE_REPORT_CRON="0 22 */2 * *"  # 19:00 Argentina = 22:00 UTC
 
 # Configuración de notificaciones (ambos emails)
 export EMAIL_TO="sanmisanti@gmail.com,ignavillanueva96@gmail.com"
@@ -40,7 +41,8 @@ cleanup() {
 trap cleanup SIGTERM SIGINT SIGQUIT
 
 echo "📊 CONFIGURACIÓN DE PRODUCCIÓN:"
-echo "  ⏰ Horario: Lunes a Viernes, 11:00-18:00"
+echo "  ⏰ Horario: Lunes a Viernes, 11:00-18:00 (hora argentina)"
+echo "  🌍 UTC: Lunes a Viernes, 14:00-21:00 (servidor AWS)"
 echo "  🔄 Intervalo: Cada 10 minutos"
 echo "  📧 Destinatarios: $EMAIL_TO"
 echo "  📅 Reportes: Cada 2 días a las 19:00"
