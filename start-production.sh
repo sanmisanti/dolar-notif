@@ -3,13 +3,13 @@
 echo "🚀 INICIANDO DÓLAR NOTIF - MODO PRODUCCIÓN"
 echo "========================================"
 
-# Configuración de producción (horario bancario normal)
+# Configuración de producción (horario bancario - cada 10 minutos)
 export TESTING_MODE=false
-export SCHEDULE_CRON="*/30 11-18 * * 1-5"
+export SCHEDULE_CRON="*/10 11-18 * * 1-5"
 export SCHEDULE_START_HOUR=11
 export SCHEDULE_END_HOUR=18
 export SCHEDULE_WEEKDAYS_ONLY=true
-export SCHEDULE_INTERVAL_MINUTES=30
+export SCHEDULE_INTERVAL_MINUTES=10
 export SCHEDULE_TIMEZONE="America/Argentina/Buenos_Aires"
 export SCHEDULE_REPORT_CRON="0 19 */2 * *"
 
@@ -41,7 +41,7 @@ trap cleanup SIGTERM SIGINT SIGQUIT
 
 echo "📊 CONFIGURACIÓN DE PRODUCCIÓN:"
 echo "  ⏰ Horario: Lunes a Viernes, 11:00-18:00"
-echo "  🔄 Intervalo: Cada 30 minutos"
+echo "  🔄 Intervalo: Cada 10 minutos"
 echo "  📧 Destinatarios: $EMAIL_TO"
 echo "  📅 Reportes: Cada 2 días a las 19:00"
 echo "  🗃️ Base de datos: dollar_history.db (producción)"
