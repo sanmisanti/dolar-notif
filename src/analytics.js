@@ -116,10 +116,10 @@ export class Analytics {
     let consecutiveUp = 0;
 
     for (let i = 1; i < Math.min(prices.length, config.alerts.trendConsecutive + 1); i++) {
-      if (prices[i] < prices[i-1]) {
+      if (prices[i] > prices[i-1]) {
         consecutiveDown++;
         consecutiveUp = 0;
-      } else if (prices[i] > prices[i-1]) {
+      } else if (prices[i] < prices[i-1]) {
         consecutiveUp++;
         consecutiveDown = 0;
       } else {
@@ -133,7 +133,7 @@ export class Analytics {
       const decline = ((prices[0] - prices[consecutiveDown]) / prices[consecutiveDown] * 100).toFixed(2);
       alert = {
         type: 'trend_opportunity',
-        severity: 'medium',
+        severity: 'high',
         message: `Tendencia bajista sostenida: ${consecutiveDown} caídas consecutivas (-${decline}%)`,
         recommendation: 'buy_soon',
         confidence: 0.7,

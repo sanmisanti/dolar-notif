@@ -25,8 +25,14 @@ npm install
 cp .env.example .env
 # Editar .env con tus datos de email
 
-# Ejecutar
-npm start
+# Ejecutar en modo producción
+./start-production.sh
+
+# O ejecutar en modo testing (24/7, cada 5 min)
+./start-testing.sh
+
+# Verificar que todo funcione
+./check-system.sh
 ```
 
 ## ⚙️ Configuración
@@ -178,18 +184,43 @@ src/
 └── config.js       # Configuración centralizada
 ```
 
-## 🛠️ Desarrollo
+## 🛠️ Desarrollo y Verificación
 
 ```bash
 # Modo desarrollo con recarga automática
 npm run dev
 
-# Verificar base de datos
-sqlite3 data/dollar_history.db ".tables"
+# Verificar estado completo del sistema
+./check-system.sh
 
 # Ver logs en tiempo real
-tail -f logs/dolar-notif.log
+tail -f logs/app.log         # Producción
+tail -f logs/testing-app.log # Testing
+
+# Verificar base de datos (requiere sqlite3)
+sqlite3 data/dollar_history.db ".tables"
 ```
+
+### 🔍 Verificación del Sistema
+
+El script `check-system.sh` verifica automáticamente:
+- ✅ Estado del proceso y programador
+- ✅ Logs recientes y actividad
+- ✅ Base de datos y datos actuales
+- ✅ **Alertas críticas** (precio bajo, 3 caídas consecutivas)
+- ✅ Configuración de emails
+- ✅ Conectividad con la API
+
+```bash
+# Ejecutar verificación completa
+./check-system.sh
+```
+
+**El script detecta automáticamente:**
+- 🚨 Precios 2+ desviaciones por debajo de la media
+- 📉 3 o más caídas consecutivas
+- ⏰ Proximidad al deadline (6 octubre 2025)
+- 🔧 Problemas de configuración
 
 ## 📅 Contexto Político Actual (Sep 2025)
 

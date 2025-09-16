@@ -50,9 +50,16 @@ export class Scheduler {
     this.isRunning = true;
     
     console.log('📅 Scheduler iniciado');
-    console.log(`⏰ Monitoreo: Lunes a Viernes, 11:00-18:00, cada 30 minutos`);
-    console.log(`📧 Reportes: Cada 2 días a las 19:00`);
+
+    const daysText = config.schedule.weekdaysOnly ? 'Lunes a Viernes' : 'Todos los días';
+    const intervalText = config.schedule.intervalMinutes === 30 ? 'cada 30 minutos' :
+                        config.schedule.intervalMinutes === 5 ? 'cada 5 minutos' :
+                        `cada ${config.schedule.intervalMinutes} minutos`;
+
+    console.log(`⏰ Monitoreo: ${daysText}, ${config.schedule.startHour}:00-${config.schedule.endHour}:00, ${intervalText}`);
+    console.log(`📧 Reportes: ${config.schedule.reportCron}`);
     console.log(`🌍 Zona horaria: ${config.schedule.timezone}`);
+    console.log(`🔗 Cron: ${config.schedule.cron}`);
     console.log(`📍 Próxima ejecución: ${this.getNextExecution()}`);
   }
 
@@ -76,41 +83,50 @@ export class Scheduler {
     const now = new Date();
     const hour = now.getHours();
     const day = now.getDay();
-    
-    const isWeekday = day >= 1 && day <= 5;
-    const isBankingHours = hour >= 11 && hour <= 18;
-    
-    return isWeekday && isBankingHours;
+
+    // Usar configuración dinámica
+    const isWeekday = config.schedule.weekdaysOnly ? (day >= 1 && day <= 5) : true;
+    const isValidHour = hour >= config.schedule.startHour && hour <= config.schedule.endHour;
+
+    return isWeekday && isValidHour;
   }
 
   getNextExecution() {
     const now = new Date();
     const next = new Date(now);
-    
+
     if (!this.shouldRunNow()) {
-      if (now.getDay() === 0) {
-        next.setDate(next.getDate() + 1);
-      } else if (now.getDay() === 6) {
-        next.setDate(next.getDate() + 2);
-      } else if (now.getHours() < 11) {
-        next.setHours(11, 0, 0, 0);
-      } else if (now.getHours() >= 18) {
-        next.setDate(next.getDate() + 1);
-        if (next.getDay() === 6) {
+      // Calcular próximo horario válido usando configuración dinámica
+      if (config.schedule.weekdaysOnly) {
+        if (now.getDay() === 0) { // Domingo
+          next.setDate(next.getDate() + 1);
+        } else if (now.getDay() === 6) { // Sábado
           next.setDate(next.getDate() + 2);
         }
-        next.setHours(11, 0, 0, 0);
+      }
+
+      if (now.getHours() < config.schedule.startHour) {
+        next.setHours(config.schedule.startHour, 0, 0, 0);
+      } else if (now.getHours() > config.schedule.endHour) {
+        next.setDate(next.getDate() + 1);
+        if (config.schedule.weekdaysOnly && next.getDay() === 6) {
+          next.setDate(next.getDate() + 2);
+        }
+        next.setHours(config.schedule.startHour, 0, 0, 0);
       }
     } else {
+      // Calcular próximo intervalo usando configuración dinámica
       const minutes = next.getMinutes();
-      const nextInterval = Math.ceil(minutes / 30) * 30;
-      if (nextInterval === 60) {
-        next.setHours(next.getHours() + 1, 0, 0, 0);
+      const intervalMinutes = config.schedule.intervalMinutes;
+      const nextInterval = Math.ceil(minutes / intervalMinutes) * intervalMinutes;
+
+      if (nextInterval >= 60) {
+        next.setHours(next.getHours() + Math.floor(nextInterval / 60), nextInterval % 60, 0, 0);
       } else {
         next.setMinutes(nextInterval, 0, 0);
       }
     }
-    
+
     return next.toLocaleString('es-AR');
   }
 

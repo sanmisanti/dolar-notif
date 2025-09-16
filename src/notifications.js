@@ -5,7 +5,7 @@ export class NotificationService {
   constructor() {
     this.transporter = null;
     this.lastNotificationTime = new Map();
-    this.cooldownPeriod = 30 * 60 * 1000; // 30 minutos
+    this.cooldownPeriod = process.env.TESTING_MODE === 'true' ? 5 * 1000 : 30 * 60 * 1000; // 5 seg en testing, 30 min en producción
     this.lastReportDate = null;
   }
 
@@ -86,15 +86,17 @@ export class NotificationService {
   generateSubject(primaryAlert, analysisResult) {
     const price = analysisResult.currentPrice;
     const emoji = this.getAlertEmoji(primaryAlert.severity);
-    
+
     switch (primaryAlert.type) {
       case 'statistical_opportunity':
-        return `${emoji} ¡Oportunidad Dólar! $${price} (${primaryAlert.details.zScore} desv.)`;
+        return `${emoji} Alerta por Z-Score - Dólar $${price} (${primaryAlert.details.zScore} desv.)`;
       case 'deadline_approaching':
       case 'deadline_passed':
-        return `${emoji} ¡Fecha Límite Dólar! $${price} - ${primaryAlert.details?.daysRemaining || 0} días`;
+        return `${emoji} Alerta por Proximidad de DL - Dólar $${price} (${primaryAlert.details?.daysRemaining || 0} días)`;
       case 'trend_opportunity':
-        return `${emoji} Tendencia Bajista Dólar $${price} (${primaryAlert.details.consecutiveDeclines} caídas)`;
+        return `${emoji} Alerta por TD - Dólar $${price} (${primaryAlert.details.consecutiveDeclines} caídas)`;
+      case 'approaching_deadline':
+        return `${emoji} Alerta por Proximidad de DL - Dólar $${price} (${primaryAlert.details?.daysRemaining || 0} días)`;
       default:
         return `${emoji} Alerta Dólar Oficial $${price}`;
     }

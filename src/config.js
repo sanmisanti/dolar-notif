@@ -20,11 +20,16 @@ export const config = {
     trendConsecutive: parseInt(process.env.ALERT_TREND_CONSECUTIVE) || 3
   },
   database: {
-    path: process.env.DB_PATH || './data/dollar_history.db'
+    path: process.env.DB_PATH || (process.env.TESTING_MODE === 'true' ? './data/testing_history.db' : './data/dollar_history.db')
   },
   schedule: {
-    cron: '*/30 11-18 * * 1-5',
-    timezone: 'America/Argentina/Buenos_Aires',
-    reportCron: '0 19 */2 * *'  // Cada 2 días a las 19:00
+    cron: process.env.SCHEDULE_CRON || '*/30 11-18 * * 1-5',
+    timezone: process.env.SCHEDULE_TIMEZONE || 'America/Argentina/Buenos_Aires',
+    reportCron: process.env.SCHEDULE_REPORT_CRON || '0 19 */2 * *',
+    // Configuración dinámica para validaciones
+    startHour: parseInt(process.env.SCHEDULE_START_HOUR) || 11,
+    endHour: parseInt(process.env.SCHEDULE_END_HOUR) || 18,
+    weekdaysOnly: process.env.SCHEDULE_WEEKDAYS_ONLY !== 'false', // default true
+    intervalMinutes: parseInt(process.env.SCHEDULE_INTERVAL_MINUTES) || 30
   }
 };

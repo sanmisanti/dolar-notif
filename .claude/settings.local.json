@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(./check-system.sh)",
+      "Bash(__NEW_LINE__ rm -f production-guide.md)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

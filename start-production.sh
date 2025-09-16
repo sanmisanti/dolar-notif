@@ -1,10 +1,23 @@
 #!/bin/bash
 
-# Script para ejecutar en producción
-# Modo: Proceso persistente con logs
+echo "🚀 INICIANDO DÓLAR NOTIF - MODO PRODUCCIÓN"
+echo "========================================"
 
-echo "🚀 INICIANDO DÓLAR NOTIF EN PRODUCCIÓN"
-echo "====================================="
+# Configuración de producción (horario bancario normal)
+export TESTING_MODE=false
+export SCHEDULE_CRON="*/30 11-18 * * 1-5"
+export SCHEDULE_START_HOUR=11
+export SCHEDULE_END_HOUR=18
+export SCHEDULE_WEEKDAYS_ONLY=true
+export SCHEDULE_INTERVAL_MINUTES=30
+export SCHEDULE_TIMEZONE="America/Argentina/Buenos_Aires"
+export SCHEDULE_REPORT_CRON="0 19 */2 * *"
+
+# Configuración de notificaciones (ambos emails)
+export EMAIL_TO="sanmisanti@gmail.com,ignavillanueva96@gmail.com"
+
+# Base de datos de producción
+export DB_PATH="./data/dollar_history.db"
 
 # Crear directorio de logs si no existe
 mkdir -p logs
@@ -26,7 +39,15 @@ cleanup() {
 # Configurar traps para cleanup
 trap cleanup SIGTERM SIGINT SIGQUIT
 
-log "🔧 Iniciando sistema..."
+echo "📊 CONFIGURACIÓN DE PRODUCCIÓN:"
+echo "  ⏰ Horario: Lunes a Viernes, 11:00-18:00"
+echo "  🔄 Intervalo: Cada 30 minutos"
+echo "  📧 Destinatarios: $EMAIL_TO"
+echo "  📅 Reportes: Cada 2 días a las 19:00"
+echo "  🗃️ Base de datos: dollar_history.db (producción)"
+echo ""
+
+log "🔧 Iniciando sistema de producción..."
 
 # Ejecutar en background y capturar PID
 NODE_ENV=production PM2_MODE=true node src/index.js >> logs/app.log 2>&1 &
